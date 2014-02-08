@@ -39,19 +39,31 @@ window.onload = function() {
 
     var Tank = function(isMyTank,itop,ileft, iClass, iBClass){
         var iClass = iClass || '', iBClass = iBClass || '';
-        var tank = $('<div class="tank '+iClass+'"><div class="tank-center"></div><div class="cannon"></div></div>').appendTo(document.body);
+        var tank = $('<div class="tank '+iClass+'"><div class="tank-life"></div><div class="tank-center"></div><div class="cannon"></div></div>').appendTo(document.body);
         tank = tank.get(0);
         var $tank = $(tank);
-        var tankWidth = $tank.outerWidth(true);
-        var tankHeight = $tank.outerHeight(true);
+        var tankWidth = $tank.outerWidth(false);
+        var tankHeight = $tank.outerHeight(false);
         var $tankCenter = $('.tank-center',tank);
+        tankCenter = $tankCenter.get(0);
         var $cannon = $('.cannon',$tank);
+        var cannonOffsetTop = $cannon.get(0).offsetTop;
+        var $life = $('.tank-life',$tank);
         var tankBorder = 10;
         var g_top = tank.offsetTop, g_left = tank.offsetLeft, g_deg = 0;
         var distance = 50;
         var moveTime = 500;
+        var life = 4;
 
         var tankObj = {
+        'tank':tank,
+        'reducelife': function(){
+            if(--life == 0){
+                $tank.remove();
+            }else{
+                $life.css({width: (life*25)+'%'}) ;
+            }
+        },
 
         'vpos': function(newPos){
             return  Math.min(maxHeight - tankHeight, Math.max(tankBorder, newPos)) ;
@@ -82,24 +94,64 @@ window.onload = function() {
         },
         'shoot': function(){
             //shoot
-            var bullet = $('<div class="bullet '+iBClass+'"></div>').appendTo(document.body);
+            var $bullet = $('<div class="bullet '+iBClass+'"></div>').appendTo(document.body);
+            var bullet = $bullet.get(0);
             var transforms = [];
             transforms.push(' rotate('+ g_deg +'deg)');
-            var g_top = tank.offsetTop, g_left = tank.offsetLeft;
-            bullet.css({top: g_top - 30, left: g_left + 30, transform: transforms.join(' ')});
+            var g_top = tank.offsetTop + cannonOffsetTop , g_left = tank.offsetLeft + tankWidth/2 - 5;
+           console.info('gg',cannonOffsetTop, g_top,g_left); 
+            $bullet.css({top: g_top  , left: g_left , transform: transforms.join(' ')});
+            var shootTime = 10000;
 
 //            transforms.push('scale(4,4) ');
 //            transforms.push('rotate(180deg) ');
 
+            /*
+             // animate
+            console.info(g_deg);
+            $bullet.animate({top:bullet.offsetTop - maxWH*Math.cos(g_deg/180*Math.PI),left:bullet.offsetLeft + maxWH*Math.sin(g_deg/180*Math.PI)},10000);
+            */
+            
+            
             setTimeout(function(){
+                //$bullet.css({transition: 'transform '+ shootTime/1000 +'s'})
                 transforms.push(' translateY(-'+ maxWH +'px)');
-                bullet.css({transform: transforms.join(' ')});
-                bullet.addClass('bullet-transition');
+                $bullet.css({transform: transforms.join(' ')});
+                $bullet.addClass('bullet-transition');
             },1);
 
+            var start = new Date();
+            var topDelta = Math.cos(g_deg/180*Math.PI);
+            var leftDelta = Math.sin(g_deg/180*Math.PI);
+            var bulletTop = bullet.offsetTop;
+            var bulletLeft = bullet.offsetLeft;
+            
+            
+            console.info(topDelta,leftDelta,bulletTop,bulletLeft);
             setTimeout(function(){
-                bullet.remove();
-            },2200);
+            var interID = setInterval(function(){
+                var then = new Date();
+                var h = maxWH*(then - start)/shootTime;
+                var top = bulletTop - h * topDelta,left = bulletLeft + h * leftDelta;
+                if((top<0 || top > maxHeight) || (left<0 || left> maxWidth )){
+                    clearInterval(interID);
+                    clearTimeout(timeoutID);
+                    $bullet.remove();
+                }
+                var elm = document.elementFromPoint(top, left); 
+                    console.info(top,left, elm);
+                $('<div class="bullet" style="top:'+top+'px;left:'+left+'px"></div>').appendTo(document.body);
+                if(elm && (elm != document.body)){
+                }
+            },shootTime/30)
+            },0);
+
+            
+            var timeoutID = setTimeout(function(){
+                clearInterval(interID);
+                $bullet.remove();
+            },shootTime);
+            
         },
         'rotateCannon': function(deg){
             
@@ -161,6 +213,7 @@ window.onload = function() {
 
     var tank = new Tank(true);
 
+    return;
     var left = ((Math.random()*maxWidth).toFixed(0));
     var top = ((Math.random()*maxHeight).toFixed(0));
     var tankc1 = new Tank(false, top, left, 'tankc tankc1', 'bullet-special');
@@ -172,6 +225,7 @@ window.onload = function() {
             deg = 180 - deg;
         }
 
+        /*
         switch(rand){
             case 1:
                 tankc1.left();
@@ -186,8 +240,9 @@ window.onload = function() {
                 tankc1.down();
                 break;
         }
+        */
         tankc1.rotateCannon(deg);
-        setTimeout(tankc1.shoot,1600);
+        //setTimeout(tankc1.shoot,1600);
     },2000);
     
 
