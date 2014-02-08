@@ -73,6 +73,15 @@ body{
     transition:  transform 1.5s;
     -webkit-transition:  -webkit-transform 1.5s;
 }
+.dots{
+
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: rgb(170, 170, 170);
+    border-radius:5px;
+    transform-origin:5px 55px ;
+}
 .bullet{
     position: absolute;
     width: 10px;
