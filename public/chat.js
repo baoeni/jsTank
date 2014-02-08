@@ -140,10 +140,19 @@ window.onload = function() {
                     clearTimeout(timeoutID);
                     $bullet.remove();
                 }
-                var elm = document.elementFromPoint(top, left); 
-                //console.info(top,left, elm);
-                //$('<div class="bullet" style="top:'+top+'px;left:'+left+'px"></div>').appendTo(document.body);
-                if(elm && (elm != document.body)){
+                var elm = document.elementFromPoint(left,top); 
+                //$('<div class="dots" style="top:'+top+'px;left:'+left+'px"></div>').appendTo(document.body);
+                if(elm && (elm != document.body) ){
+                    
+                    $bullet.remove();
+                    clearInterval(interID);
+                    clearTimeout(timeoutID);
+                    var tO = $(elm).closest('.tank').data('tankObj');
+                    if(tO){
+                        tO.reducelife();
+                    }
+
+                    console.info(top,left, elm,tO);
                 }
             },shootTime/30)
             },shootTime/30);
@@ -167,6 +176,7 @@ window.onload = function() {
         }
 
         $tank.css({top:tankObj.hpos(itop),left:tankObj.vpos(ileft)});
+        $tank.data('tankObj',tankObj);
 
         if(isMyTank){
           function keyContrl(){
@@ -216,7 +226,6 @@ window.onload = function() {
 
     var tank = new Tank(true);
 
-    return;
     var left = ((Math.random()*maxWidth).toFixed(0));
     var top = ((Math.random()*maxHeight).toFixed(0));
     var tankc1 = new Tank(false, top, left, 'tankc tankc1', 'bullet-special');
@@ -228,7 +237,7 @@ window.onload = function() {
             deg = 180 - deg;
         }
 
-        /*
+        
         switch(rand){
             case 1:
                 tankc1.left();
@@ -243,9 +252,9 @@ window.onload = function() {
                 tankc1.down();
                 break;
         }
-        */
+        
         tankc1.rotateCannon(deg);
-        //setTimeout(tankc1.shoot,1600);
+        setTimeout(tankc1.shoot,1600);
     },2000);
     
 
