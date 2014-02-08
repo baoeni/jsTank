@@ -17,6 +17,7 @@ body{
     height: 30px; 
     margin: 0 0 0px 0; 
     border: solid 10px #999; 
+    background-color: rgb(119, 255, 119);
     
     transition:  transform 1s;
     -webkit-transition:  -webkit-transform 1s;
@@ -32,7 +33,6 @@ body{
     margin-top: -5px;
     z-index:2;
     border-radius: 5px;
-    background-color: rgb(119, 255, 119);
 }
 .tankc{
     border-color:#6db6f0;

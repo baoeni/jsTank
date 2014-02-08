@@ -34,10 +34,11 @@ window.onload = function() {
 
     var maxWidth = document.documentElement.offsetWidth;
     var maxHeight = document.documentElement.offsetHeight;
-var maxWH = Math.max(maxWidth, maxHeight)*1.414 + 20 ;
+    var maxWH = Math.max(maxWidth, maxHeight)*1.414 + 20 ;
 
 
     var Tank = function(isMyTank,itop,ileft, iClass, iBClass){
+        var iClass = iClass || '', iBClass = iBClass || '';
         var tank = $('<div class="tank '+iClass+'"><div class="tank-center"></div><div class="cannon"></div></div>').appendTo(document.body);
         tank = tank.get(0);
         var $tank = $(tank);
@@ -46,8 +47,6 @@ var maxWH = Math.max(maxWidth, maxHeight)*1.414 + 20 ;
         var $tankCenter = $('.tank-center',tank);
         var $cannon = $('.cannon',$tank);
         var tankBorder = 10;
-        
-
         var g_top = tank.offsetTop, g_left = tank.offsetLeft, g_deg = 0;
         var distance = 50;
         var moveTime = 500;
@@ -61,36 +60,24 @@ var maxWH = Math.max(maxWidth, maxHeight)*1.414 + 20 ;
             return  Math.min(maxWidth - tankWidth, Math.max(tankBorder, newPos)) ;
         },
         'up': function(idistance){
-            var jdistance = distance ;
-            if((typeof(idistance) == 'number' )&& !isNaN(idistance)){
-                jdistance = idistance;
-            }
-            g_top = this.vpos(parseInt(tank.offsetTop) - jdistance) ;
+            var idistance = idistance || distance ;
+            g_top = this.vpos(parseInt(tank.offsetTop) - idistance) ;
             $tank.stop(true).animate({top:g_top},moveTime);
 //            tankObj.style.top = g_top + 'px';
         },
         'down': function(idistance){
-            var jdistance = distance ;
-            if((typeof(idistance) == 'number' )&& !isNaN(idistance)){
-                jdistance = idistance;
-            }
-            g_top = this.vpos(parseInt(tank.offsetTop) + jdistance) ;
+            var idistance = idistance || distance ;
+            g_top = this.vpos(parseInt(tank.offsetTop) + idistance) ;
             $tank.stop(true).animate({top:g_top},moveTime);
         },
         'left': function(idistance){
-            var jdistance = distance ;
-            if((typeof(idistance) == 'number' )&& !isNaN(idistance)){
-                jdistance = idistance;
-            }
-            g_left = this.hpos(parseInt(tank.offsetLeft) - jdistance) ;
+            var idistance = idistance || distance ;
+            g_left = this.hpos(parseInt(tank.offsetLeft) - idistance) ;
             $tank.stop(true).animate({left:g_left},moveTime);
         },
         'right': function(idistance){
-            var jdistance = distance ;
-            if((typeof(idistance) == 'number' )&& !isNaN(idistance)){
-                jdistance = idistance;
-            }
-            g_left = this.hpos(parseInt(tank.offsetLeft) + jdistance) ;
+            var idistance = idistance || distance ;
+            g_left = this.hpos(parseInt(tank.offsetLeft) + idistance) ;
             $tank.stop(true).animate({left:g_left},moveTime);
         },
         'shoot': function(){
