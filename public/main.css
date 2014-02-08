@@ -47,6 +47,11 @@ body{
 
     transform-origin:50% 100%;
     -webkit-transform-origin:50% 90%; /* Safari and Chrome */
+
+}
+.cannon-transition{
+    transition:  transform 1.5s;
+    -webkit-transition:  -webkit-transform 1.5s;
 }
 .bullet{
     position: absolute;
