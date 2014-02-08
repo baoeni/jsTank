@@ -34,7 +34,7 @@ window.onload = function() {
 
     var maxWidth = document.documentElement.offsetWidth;
     var maxHeight = document.documentElement.offsetHeight;
-    var maxWH = Math.max(maxWidth, maxHeight) + 20 ;
+    var maxWH = Math.max(maxWidth, maxHeight)*1.414 + 20 ;
 
     var Tank = function(isMyTank,itop,ileft){
         var tank = $('<div class="tank"><div class="tank-center"></div><div class="cannon"></div></div>').appendTo(document.body);
@@ -48,32 +48,34 @@ window.onload = function() {
         $tank.css({top:itop,left:ileft});
 
         var g_top = tank.offsetTop, g_left = tank.offsetLeft, g_deg = 0;
+        var distance = 50;
 
         var tankObj = {
-     
+
         'up': function(){
-            g_top = Math.max(10, (parseInt(tank.offsetTop) - 20)) ;
-            tank.style.top = g_top + 'px';
+            g_top = Math.max(10, (parseInt(tank.offsetTop) - distance)) ;
+            $tank.stop(true).animate({top:g_top},500);
+//            tankObj.style.top = g_top + 'px';
         },
         'down': function(){
-            g_top = Math.min(maxHeight - tankHeight, (parseInt(tank.offsetTop) + 20)) ;
-            tank.style.top = g_top + 'px';
+            g_top = Math.min(maxHeight - tankHeight, (parseInt(tank.offsetTop) + distance)) ;
+            $tank.stop(true).animate({top:g_top},500);
         },
         'left': function(){
-            g_left = Math.max(10, (parseInt(tank.offsetLeft) - 20));
-            tank.style.left =  g_left + 'px';
+            g_left = Math.max(10, (parseInt(tank.offsetLeft) - distance));
+            $tank.stop(true).animate({left:g_left},500);
         },
         'right': function(){
-            g_left = Math.min(maxWidth - tankWidth, (parseInt(tank.offsetLeft) + 20));
-            tank.style.left =  g_left + 'px';
+            g_left = Math.min(maxWidth - tankWidth, (parseInt(tank.offsetLeft) + distance));
+            $tank.stop(true).animate({left:g_left},500);
         },
         'shoot': function(){
             //shoot
             var bullet = $('<div class="bullet"></div>').appendTo(document.body);
-            var itop = g_top - 30;
             var transforms = [];
             transforms.push(' rotate('+ g_deg +'deg)');
-            bullet.css({top: itop, left: g_left + 30, transform: transforms.join(' ')});
+            var g_top = tank.offsetTop, g_left = tank.offsetLeft;
+            bullet.css({top: g_top - 30, left: g_left + 30, transform: transforms.join(' ')});
 
 //            transforms.push('scale(4,4) ');
 //            transforms.push('rotate(180deg) ');
@@ -86,7 +88,7 @@ window.onload = function() {
 
             setTimeout(function(){
                 bullet.remove();
-            },2200)
+            },2200);
         },
         'rotateCannon': function(deg){
             
