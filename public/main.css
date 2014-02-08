@@ -32,7 +32,10 @@ body{
     margin-top: -5px;
     z-index:2;
     border-radius: 5px;
-
+    background-color: rgb(119, 255, 119);
+}
+.tankc{
+    border-color:#6db6f0;
 }
 .cannon{
     width: 10px; 
@@ -80,6 +83,9 @@ body{
     background: radial-gradient(ellipse at center,  #999999 0%,#0e0e0e 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#999999', endColorstr='#0e0e0e',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 
+}
+.bullet-special{
+    border-radius: 5px 5px 0 0;
 }
 .bullet-transition{
 

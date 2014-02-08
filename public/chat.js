@@ -34,44 +34,68 @@ window.onload = function() {
 
     var maxWidth = document.documentElement.offsetWidth;
     var maxHeight = document.documentElement.offsetHeight;
-    var maxWH = Math.max(maxWidth, maxHeight)*1.414 + 20 ;
+var maxWH = Math.max(maxWidth, maxHeight)*1.414 + 20 ;
 
-    var Tank = function(isMyTank,itop,ileft){
-        var tank = $('<div class="tank"><div class="tank-center"></div><div class="cannon"></div></div>').appendTo(document.body);
+
+    var Tank = function(isMyTank,itop,ileft, iClass, iBClass){
+        var tank = $('<div class="tank '+iClass+'"><div class="tank-center"></div><div class="cannon"></div></div>').appendTo(document.body);
         tank = tank.get(0);
         var $tank = $(tank);
         var tankWidth = $tank.outerWidth(true);
         var tankHeight = $tank.outerHeight(true);
         var $tankCenter = $('.tank-center',tank);
         var $cannon = $('.cannon',$tank);
+        var tankBorder = 10;
         
-        $tank.css({top:itop,left:ileft});
 
         var g_top = tank.offsetTop, g_left = tank.offsetLeft, g_deg = 0;
         var distance = 50;
+        var moveTime = 500;
 
         var tankObj = {
 
-        'up': function(){
-            g_top = Math.max(10, (parseInt(tank.offsetTop) - distance)) ;
-            $tank.stop(true).animate({top:g_top},500);
+        'vpos': function(newPos){
+            return  Math.min(maxHeight - tankHeight, Math.max(tankBorder, newPos)) ;
+        },
+        'hpos': function(newPos){
+            return  Math.min(maxWidth - tankWidth, Math.max(tankBorder, newPos)) ;
+        },
+        'up': function(idistance){
+            var jdistance = distance ;
+            if((typeof(idistance) == 'number' )&& !isNaN(idistance)){
+                jdistance = idistance;
+            }
+            g_top = this.vpos(parseInt(tank.offsetTop) - jdistance) ;
+            $tank.stop(true).animate({top:g_top},moveTime);
 //            tankObj.style.top = g_top + 'px';
         },
-        'down': function(){
-            g_top = Math.min(maxHeight - tankHeight, (parseInt(tank.offsetTop) + distance)) ;
-            $tank.stop(true).animate({top:g_top},500);
+        'down': function(idistance){
+            var jdistance = distance ;
+            if((typeof(idistance) == 'number' )&& !isNaN(idistance)){
+                jdistance = idistance;
+            }
+            g_top = this.vpos(parseInt(tank.offsetTop) + jdistance) ;
+            $tank.stop(true).animate({top:g_top},moveTime);
         },
-        'left': function(){
-            g_left = Math.max(10, (parseInt(tank.offsetLeft) - distance));
-            $tank.stop(true).animate({left:g_left},500);
+        'left': function(idistance){
+            var jdistance = distance ;
+            if((typeof(idistance) == 'number' )&& !isNaN(idistance)){
+                jdistance = idistance;
+            }
+            g_left = this.hpos(parseInt(tank.offsetLeft) - jdistance) ;
+            $tank.stop(true).animate({left:g_left},moveTime);
         },
-        'right': function(){
-            g_left = Math.min(maxWidth - tankWidth, (parseInt(tank.offsetLeft) + distance));
-            $tank.stop(true).animate({left:g_left},500);
+        'right': function(idistance){
+            var jdistance = distance ;
+            if((typeof(idistance) == 'number' )&& !isNaN(idistance)){
+                jdistance = idistance;
+            }
+            g_left = this.hpos(parseInt(tank.offsetLeft) + jdistance) ;
+            $tank.stop(true).animate({left:g_left},moveTime);
         },
         'shoot': function(){
             //shoot
-            var bullet = $('<div class="bullet"></div>').appendTo(document.body);
+            var bullet = $('<div class="bullet '+iBClass+'"></div>').appendTo(document.body);
             var transforms = [];
             transforms.push(' rotate('+ g_deg +'deg)');
             var g_top = tank.offsetTop, g_left = tank.offsetLeft;
@@ -99,6 +123,8 @@ window.onload = function() {
         'end':''
         
         }
+
+        $tank.css({top:tankObj.hpos(itop),left:tankObj.vpos(ileft)});
 
         if(isMyTank){
           function keyContrl(){
@@ -147,27 +173,33 @@ window.onload = function() {
     }
 
     var tank = new Tank(true);
-    
-    var left = ((Math.random()*100).toFixed(0)) + '%';
-    var top = ((Math.random()*100).toFixed(0)) + '%';
-    var tankc1 = new Tank(false, top, left);
+
+    var left = ((Math.random()*maxWidth).toFixed(0));
+    var top = ((Math.random()*maxHeight).toFixed(0));
+    var tankc1 = new Tank(false, top, left, 'tankc tankc1', 'bullet-special');
     setInterval(function(){
     
-        var isleft = ((Math.random()*10).toFixed(0))%2;
-        var istop = ((Math.random()*10).toFixed(0))%2;
-        var deg = ((Math.random()*10).toFixed(0));
-       
-        if(isleft){
-            tankc1.left();
-        }else{
-            tankc1.right();
-        } 
-        if(istop){
-            tankc1.up();
-        }else{
-            tankc1.down();
-        } 
-        tankc1.rotateCannon(deg/Math.PI*180);
+        var rand = parseInt((Math.random()*4).toFixed(0));
+        var deg = ((Math.random()).toFixed(2))*360;
+        if(deg > 180){
+            deg = 180 - deg;
+        }
+
+        switch(rand){
+            case 1:
+                tankc1.left();
+                break;
+            case 2:
+                tankc1.right();
+                break;
+            case 3:
+                tankc1.up();
+                break;
+            case 4:
+                tankc1.down();
+                break;
+        }
+        tankc1.rotateCannon(deg);
         setTimeout(tankc1.shoot,1600);
     },2000);
     
